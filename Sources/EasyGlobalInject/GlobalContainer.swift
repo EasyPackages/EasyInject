@@ -1,6 +1,8 @@
 import Foundation
 
-public final class GlobalContainer: @unchecked Sendable {
+import EasyInject
+
+public final class GlobalContainer: @unchecked Sendable, Container {
     public static let shared = GlobalContainer()
 
     fileprivate var dependencies = [ObjectIdentifier: Any]()
@@ -28,11 +30,11 @@ public final class GlobalContainer: @unchecked Sendable {
         }
     }
     
-    public func inject<T>(_ type: T.Type? = nil) -> T? {
+    public func inject<T>(_ type: T.Type) -> T? {
         resolve(T.self)
     }
 
-    public func injectWith<T>(_ type: T.Type? = nil, _ completion: (T) -> T) -> T? {
+    public func injectWith<T>(_ type: T.Type, _ completion: (T) -> T) -> T? {
         guard let old = resolve(T.self) else {
             return nil
         }
