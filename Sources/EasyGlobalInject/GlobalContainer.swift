@@ -1,9 +1,9 @@
 import Foundation
 
-final class GlobalContainer: @unchecked Sendable {
-    static let shared = GlobalContainer()
+public final class GlobalContainer: @unchecked Sendable {
+    public static let shared = GlobalContainer()
 
-    private var dependencies = [ObjectIdentifier: Any]()
+    fileprivate var dependencies = [ObjectIdentifier: Any]()
     
     private let queue = DispatchQueue(
         label: Bundle.main
@@ -12,8 +12,8 @@ final class GlobalContainer: @unchecked Sendable {
         attributes: .concurrent
     )
     
-    private init() {
-        // Singleton
+    public init() {
+        clean()
     }
     
     private func register<T>(_ instance: T, for type: T.Type) {
@@ -48,5 +48,9 @@ final class GlobalContainer: @unchecked Sendable {
     public func replace<T>(_ type: T.Type, _ completion: @escaping (T) -> T) {
         let old = resolve(type)!
         register(completion(old), for: type)
+    }
+    
+    public func clean() {
+        dependencies = [:]
     }
 }
